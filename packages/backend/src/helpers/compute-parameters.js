@@ -102,8 +102,10 @@ function computeVariable(variable, executionSteps) {
   /**
    * Inline both arrays and objects. Otherwise, variables resolving to
    * them would be resolved as `[object Object]` or lose their shape.
+   * `null` is excluded since `typeof null === 'object'`; it should be
+   * treated like a missing value rather than the literal string "null".
    */
-  if (typeof computedVariable === 'object') {
+  if (computedVariable !== null && typeof computedVariable === 'object') {
     return JSON.stringify(computedVariable);
   }
 

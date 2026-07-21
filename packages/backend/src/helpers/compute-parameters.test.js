@@ -161,6 +161,45 @@ describe('Compute parameters helper', () => {
       expect(computedParameters).toStrictEqual(expectedParameters);
     });
 
+    describe('with variables resolving to null', () => {
+      const executionStepsWithNull = [
+        {
+          stepId: 'step-with-null',
+          dataOut: {
+            nullKey: null,
+          },
+        },
+      ];
+
+      it('should resolve a standalone null variable as an empty string', () => {
+        const parameters = {
+          key1: computeVariable('step-with-null', 'nullKey'),
+        };
+
+        const computedParameters = computeParameters(
+          parameters,
+          stepArguments,
+          executionStepsWithNull
+        );
+
+        expect(computedParameters).toStrictEqual({ key1: '' });
+      });
+
+      it('should treat a null variable like a missing value when mixed with text', () => {
+        const parameters = {
+          key1: `prefix ${computeVariable('step-with-null', 'nullKey')} suffix`,
+        };
+
+        const computedParameters = computeParameters(
+          parameters,
+          stepArguments,
+          executionStepsWithNull
+        );
+
+        expect(computedParameters).toStrictEqual({ key1: 'prefix  suffix' });
+      });
+    });
+
     describe('with variables containing JSON', () => {
       describe('without explicit valueType defined', () => {
         let stepArguments;
