@@ -171,18 +171,18 @@ describe('Compute parameters helper', () => {
         },
       ];
 
-      it('should resolve a standalone null variable as an empty string', () => {
+      it('should keep a standalone null variable as null in a parsed field', () => {
         const parameters = {
           key1: computeVariable('step-with-null', 'nullKey'),
         };
 
         const computedParameters = computeParameters(
           parameters,
-          stepArguments,
+          [createStringArgument({ key: 'key1', valueType: 'parse' })],
           executionStepsWithNull
         );
 
-        expect(computedParameters).toStrictEqual({ key1: '' });
+        expect(computedParameters).toStrictEqual({ key1: null });
       });
 
       it('should treat a null variable like a missing value when mixed with text', () => {
